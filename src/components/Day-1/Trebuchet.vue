@@ -2,26 +2,27 @@
 const { fileContent, handleFileChange } = useFileReader();
 
 const total = ref<number>(0);
-const nums = '0123456789';
 
-function check(x: string) {
+function isNumber(x: string) {
+  const nums = '0123456789';
   return nums.includes(x) ? true : false;
+}
+
+function mergeNumbers(nums: string[]) {
+  if (nums.length >= 3) {
+    return parseInt(nums[0] + nums.slice(-1));
+  } else if (nums.length === 1) {
+    return parseInt(nums[0] + nums[0]);
+  } else {
+    return parseInt(nums.reduce((x, y) => x + y, ''));
+  }
 }
 
 function trebuchet() {
   const words = fileContent.value?.split('\n');
 
   const numbers = words
-    ?.map((str) => {
-      const nums = [...str].filter((x) => (check(x) ? x : ''));
-      if (nums.length >= 3) {
-        return parseInt(nums[0] + nums.slice(-1));
-      } else if (nums.length === 1) {
-        return parseInt(nums[0] + nums[0]);
-      } else {
-        return parseInt(nums.reduce((x, y) => x + y, ''));
-      }
-    })
+    ?.map((str) => mergeNumbers([...str].filter((x) => (isNumber(x) ? x : ''))))
     ?.filter((num) => Number.isInteger(num));
 
   total.value = numbers?.reduce((x, y) => x + y, 0) ?? 0;
