@@ -59,7 +59,7 @@ function stepTwo() {
       splitByDigital
         ?.map((str: string) => {
           if (Number.isInteger(parseInt(str))) {
-            return [...(str + '')].map((str) => parseInt(str));
+            return [...(str + '')];
           } else if (Object.keys(letters).find((motInList) => str.includes(motInList))) {
             return extractWords(str);
           } else {
