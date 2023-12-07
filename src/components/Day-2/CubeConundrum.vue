@@ -2,45 +2,48 @@
 const { fileContent, handleFileChange } = useFileReader();
 
 const total = ref<number>(0);
+const words = computed(() => fileContent.value?.split('\n'));
+const ob = {
+  blue: 14,
+  green: 13,
+  red: 12,
+};
 
-function stepOne() {
-  const ob = {
-    blue: 14,
-    green: 13,
-    red: 12,
-  };
-  const words = fileContent.value?.split('\n');
-  const cut = words.map((str) => {
-    const arr = str.replace(/:|;/g, ',').split(',').slice(1);
+function parseWord(word) {
+  const wordSections = word.split(':').slice(1);
+  const gameData = wordSections[0]?.split(';');
+  const lines = gameData?.map((line) => line.split(','));
 
-    return arr
-      .map((str2) => {
-        const ll = str2.split(' ').splice(1);
-        return {
-          [ll[1]]: parseInt(ll[0]),
-        };
+  return lines?.map((lineData) => {
+    const lineValues = lineData
+      ?.map((value) => {
+        const tokens = value.split(' ').splice(1);
+        return { [tokens[1]]: parseInt(tokens[0]) };
       })
-      .reduce((acc, item) => {
-        const key = Object.keys(item)[0];
-        const value = item[key];
-        acc[key] = (acc[key] || 0) + value;
-        return acc;
-      }, {});
+      .reduce((acc, obj) => ({ ...acc, ...obj }), {});
+    const defaultObj = { blue: 0, green: 0, red: 0 };
+    return { ...defaultObj, ...lineValues };
   });
-  console.log(cut);
+}
 
-  const p = cut
-    .map((oto, index) => {
-      if (oto.blue <= ob.blue && oto.red <= ob.red && oto.green <= ob.green) {
-        console.log(oto);
-        return index + 1;
-      }
+function filterAndMap(parsedWords, ob) {
+  return parsedWords
+    ?.map((lineArray, index) => {
+      return lineArray.map((lineObject) => {
+        if (lineObject.blue <= ob.blue && lineObject.red <= ob.red && lineObject.green <= ob.green) {
+          return index + 1;
+        }
+      });
     })
-    .filter((i) => i);
-  console.log(p);
+    ?.map((valueArray) => (valueArray.includes(undefined) ? 0 : valueArray))
+    ?.flat();
+}
 
-  total.value = p.reduce((a, b) => a + b);
-  console.log(words);
+function stepOne(words, ob) {
+  const parsedWords = words?.map((word) => parseWord(word)).filter((line) => line);
+  const resultArray = filterAndMap(parsedWords, ob);
+
+  total.value = [...new Set(resultArray)]?.reduce((acc, value) => acc + value);
 }
 </script>
 <template>
@@ -53,7 +56,7 @@ function stepOne() {
       />
     </template>
     <template #actions>
-      <button type="button" class="btn join-item btn-primary" @click.prevent="stepOne()">Step 1</button>
+      <button type="button" class="btn join-item btn-primary" @click.prevent="stepOne(words, ob)">Step 1</button>
     </template>
   </Card>
 </template>
