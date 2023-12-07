@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Trebuchet from './components/Day-1/Trebuchet.vue';
 import CubeConundrum from './components/Day-2/CubeConundrum.vue';
+import GearRatios from './components/Day-3/GearRatios.vue';
 
-const components = [Trebuchet, CubeConundrum];
+const components = [Trebuchet, CubeConundrum, GearRatios];
 </script>
 
 <template>
