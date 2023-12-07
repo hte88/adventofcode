@@ -11,7 +11,7 @@ const components = [Trebuchet, CubeConundrum];
       <h1 class="text-lg font-semibold">Advent of Code 2023</h1>
     </header>
     <main>
-      <ul role="list" class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ul role="list" class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         <li
           v-for="(name, index) in components"
           :key="index"
