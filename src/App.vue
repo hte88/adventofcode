@@ -1,10 +1,25 @@
+<script setup lang="ts">
+import Trebuchet from './components/Day-1/Trebuchet.vue';
+import CubeConundrum from './components/Day-2/CubeConundrum.vue';
+
+const components = [Trebuchet, CubeConundrum];
+</script>
+
 <template>
-  <div class="max-w-xl mx-auto">
+  <div class="max-w-5xl mx-auto py-10">
     <header>
-      <h1 class="text-lg font-semibold">Advent of Code</h1>
+      <h1 class="text-lg font-semibold">Advent of Code 2023</h1>
     </header>
     <main>
-      <Trebuchet />
+      <ul role="list" class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <li
+          v-for="(name, index) in components"
+          :key="index"
+          class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
+        >
+          <component :is="name" />
+        </li>
+      </ul>
     </main>
   </div>
 </template>
