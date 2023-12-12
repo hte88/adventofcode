@@ -2,8 +2,9 @@
 import Trebuchet from './components/Day-1/Trebuchet.vue';
 import CubeConundrum from './components/Day-2/CubeConundrum.vue';
 import GearRatios from './components/Day-3/GearRatios.vue';
+import Scratchcards from './components/Day-4/Scratchcards.vue';
 
-const components = [Trebuchet, CubeConundrum, GearRatios];
+const components = [Trebuchet, CubeConundrum, GearRatios, Scratchcards];
 </script>
 
 <template>
