@@ -291,6 +291,10 @@
     "watchThrottled": true,
     "watchTriggerable": true,
     "watchWithFilter": true,
-    "whenever": true
+    "whenever": true,
+    "isNumber": true,
+    "symboles": true,
+    "extractSymboles": true,
+    "createMapFile": true
   }
 }

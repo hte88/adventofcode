@@ -1,46 +1,22 @@
 <script setup lang="ts">
+import { isNumber, extractSymboles, createMapFile } from '~/composables/useLib';
+
+interface IMap extends Map<string, string> {}
+
 const { fileContent, handleFileChange } = useFileReader();
 
 const total = ref<number>(0);
 const lines = computed(() => fileContent.value?.split('\n').slice(0, -1) ?? []);
-
-const symboles = computed(() => {
-  const symboles = fileContent.value?.replace(/[\d.\n]/g, '');
-  console.log(symboles);
-
-  return [...new Set(symboles)];
-});
 const lineLength = computed(() => lines.value[0].length);
-const linesLength = computed(() => lines.value.length);
 
-const numbers = ref([]);
-const numbersChecked = ref([]);
-
-function isNumber(x: string) {
-  return /\d/.test(x);
-}
-
-const mapFile = computed(() => {
-  let mapFile = new Map();
-  lines.value?.forEach((row, rowIndex) => {
-    Array.from(row).forEach((str, colIndex) => {
-      mapFile.set(`${rowIndex},${colIndex}`, str);
-    });
-  });
-  return mapFile;
-});
-
-function getSubMatrix(map, startRow, endRow, startCol, endCol) {
-  console.log(startRow, endRow, startCol, endCol);
-
+function getSubMatrix(map: IMap, startRow: number, endRow: number, startCol: number, endCol: number): IMap {
   const subMatrix = new Map();
+
   for (let row = startRow; row <= endRow; row++) {
     for (let col = startCol; col <= endCol; col++) {
       const key = `${row},${col}`;
       if (map.has(key)) {
         subMatrix.set(key, map.get(key));
-      } else {
-        subMatrix.set(key, null);
       }
     }
   }
@@ -48,76 +24,64 @@ function getSubMatrix(map, startRow, endRow, startCol, endCol) {
   return subMatrix;
 }
 
-function stepOne() {
-  lines.value.map((str, rowIndex) => {
-    const char = str.split('');
+function parseSubMatrix(subMatrix: IMap, symboles: string[]): boolean {
+  let findSymbole = false;
 
-    let nums = '';
-    for (let colIndex = 0; colIndex < char.length; colIndex++) {
-      const element = char[colIndex];
-
-      if (isNumber(element)) {
-        nums += element;
-        if (colIndex + 1 === lineLength.value) {
-          const subMatrix = getSubMatrix(
-            mapFile.value,
-            rowIndex - 1,
-            rowIndex + 1,
-            colIndex + 1 - (nums.length + 1),
-            colIndex + 1,
-          );
-
-          subMatrix.forEach((element) => {
-            if (symboles.value.includes(element)) {
-              numbers.value.push(nums);
-              nums = '';
-              return false;
-            }
-          });
-          nums = '';
-        }
-      } else {
-        if (nums.length) {
-          const subMatrix = getSubMatrix(
-            mapFile.value,
-            rowIndex - 1,
-            rowIndex + 1,
-            colIndex - (nums.length + 1),
-            colIndex,
-          );
-
-          subMatrix.forEach((element) => {
-            if (symboles.value.includes(element)) {
-              numbers.value.push(nums);
-              nums = '';
-              return false;
-            }
-          });
-        }
-        nums = '';
-      }
+  subMatrix.forEach((element: string) => {
+    if (symboles.includes(element)) {
+      findSymbole = true;
     }
   });
-
-  console.log(numbers.value);
-  console.log(
-    numbers.value
-      .filter((str) => str)
-      .map((str) => parseInt(str))
-      .reduce((a, b) => a + b, 0),
-  );
+  return findSymbole;
 }
 
-1116;
-// 77
-//552 638 x
-//563584 x
-//558879 x
-//558892 x
-//558107 x
-//56090 x
-//55399 x
-//55300 x
+function getNumberFromMap(mapFile: IMap, nums: string, rowIndex: number, colIndex: number, symboles: string[]): string {
+  const subMatrix = getSubMatrix(mapFile, rowIndex - 1, rowIndex + 1, colIndex - (nums.length + 1), colIndex);
+
+  return parseSubMatrix(subMatrix, symboles) ? nums : '';
+}
+
+function stepOne() {
+  const symboles = extractSymboles(fileContent.value, ['.']);
+  const mapFile = createMapFile(lines.value);
+
+  const numbers = lines.value
+    .map((str, rowIndex) => {
+      const char = str.split('');
+      let nums = '';
+      const numbers = [];
+
+      for (let colIndex = 0; colIndex < char.length; colIndex++) {
+        const element = char[colIndex];
+        if (isNumber(element)) {
+          nums += element;
+          if (colIndex + 1 === lineLength.value) {
+            const getNbr = getNumberFromMap(mapFile, nums, rowIndex, colIndex + 1, symboles);
+            if (getNbr) {
+              numbers.push(nums);
+            }
+            nums = '';
+          }
+        } else {
+          if (nums.length) {
+            const getNbr = getNumberFromMap(mapFile, nums, rowIndex, colIndex, symboles);
+            if (getNbr) {
+              numbers.push(nums);
+            }
+          }
+          nums = '';
+        }
+      }
+
+      return numbers;
+    })
+    .flat();
+
+  total.value = numbers
+    .filter((str) => str)
+    .map((str) => parseInt(str))
+    .reduce((a, b) => a + b, 0);
+}
 </script>
 <template>
   <Card title="Day 3: Gear Ratios" :result="total">
