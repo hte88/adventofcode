@@ -7,7 +7,19 @@ const total = ref<number>(0);
 const lines = computed(() => fileContent.value?.split('\n').slice(0, -1) ?? []);
 
 function stepOne() {
-  total.value = 0;
+  const clearLine = lines.value.map((line) => line.split(':')[1].trim());
+  const duplicates = clearLine
+    .map((line) => {
+      const suit = line.split('|');
+      const suit_1 = suit[0].trim().split(' ');
+      const suit_2 = suit[1].trim().split(' ');
+      return suit_1.filter((suit) => (suit ? suit_2.includes(suit) : ''));
+    })
+    .filter((str) => str.length);
+
+  const result = duplicates.map((numbers) => (numbers.length > 1 ? Math.pow(2, numbers.length - 1) : 1));
+
+  total.value = result.reduce((a, b) => a + b, 0);
 }
 </script>
 <template>
