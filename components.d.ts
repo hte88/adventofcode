@@ -12,6 +12,7 @@ declare module 'vue' {
     GearRatios: typeof import('./src/components/Day-3/GearRatios.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     InputFile: typeof import('./src/components/commons/InputFile.vue')['default']
+    Scratchcards: typeof import('./src/components/Day-4/Scratchcards.vue')['default']
     Trebuchet: typeof import('./src/components/Day-1/Trebuchet.vue')['default']
   }
 }
