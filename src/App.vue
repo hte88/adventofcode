@@ -3,12 +3,13 @@ import Trebuchet from './components/Day-1/Trebuchet.vue';
 import CubeConundrum from './components/Day-2/CubeConundrum.vue';
 import GearRatios from './components/Day-3/GearRatios.vue';
 import Scratchcards from './components/Day-4/Scratchcards.vue';
+import Fertilizer from './components/Day-5/Fertilizer.vue';
 
-const components = [Trebuchet, CubeConundrum, GearRatios, Scratchcards];
+const components = [Trebuchet, CubeConundrum, GearRatios, Scratchcards, Fertilizer];
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto py-10">
+  <div class="mx-auto max-w-5xl py-10">
     <header>
       <h1 class="text-lg font-semibold">Advent of Code 2023</h1>
     </header>
