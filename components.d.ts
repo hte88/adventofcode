@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CamelCards: typeof import('./src/components/Day-7/CamelCards.vue')['default']
     Card: typeof import('./src/components/commons/Card.vue')['default']
     CubeConundrum: typeof import('./src/components/Day-2/CubeConundrum.vue')['default']
     Fertilizer: typeof import('./src/components/Day-5/Fertilizer.vue')['default']
