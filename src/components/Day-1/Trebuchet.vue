@@ -3,6 +3,18 @@ const { fileContent, handleFileChange } = useFileReader();
 
 const total = ref<number>(0);
 const letters = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+const example_1 = ref(`1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet`);
+const example_2 = ref(`two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen`);
+const selectedInput = ref(true);
 
 function isNumber(x: string) {
   const nums = '0123456789';
@@ -41,7 +53,8 @@ function extractWords(str: string): number[] {
 }
 
 function stepOne() {
-  const words = fileContent.value?.split('\n');
+  const file = selectedInput.value ? example_1.value : fileContent.value;
+  const words = file?.split('\n');
 
   const numbers = words
     ?.map((str) => mergeNumbers([...str].filter((x) => (isNumber(x) ? x : ''))))
@@ -51,7 +64,8 @@ function stepOne() {
 }
 
 function stepTwo() {
-  const words = fileContent.value?.split('\n');
+  const file = selectedInput.value ? example_2.value : fileContent.value;
+  const words = file?.split('\n');
 
   const resultat = words?.map((word) => {
     const splitByDigital = word.match(/[a-zA-Z]+|\d+/g);
@@ -79,17 +93,23 @@ function stepTwo() {
 }
 </script>
 <template>
-  <Card title="Day 1 : Trebuchet" :result="total">
+  <Card
+    v-model:example="example_1"
+    title="Day 1 : Trebuchet"
+    :rating="2"
+    :result="total"
+    @selected-input="selectedInput = $event"
+  >
     <template #inputFile>
       <input
         type="file"
-        class="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs mx-auto"
+        class="file-input file-input-bordered file-input-primary file-input-sm mx-auto w-full max-w-xs"
         @change="handleFileChange"
       />
     </template>
     <template #actions>
-      <button type="button" class="btn join-item btn-primary" @click.prevent="stepOne()">Step 1</button>
-      <button type="button" class="btn join-item btn-primary" @click.prevent="stepTwo()">Step 2</button>
+      <button type="button" class="btn btn-primary join-item" @click.prevent="stepOne()">Step 1</button>
+      <button type="button" class="btn btn-primary join-item" @click.prevent="stepTwo()">Step 2</button>
     </template>
   </Card>
 </template>

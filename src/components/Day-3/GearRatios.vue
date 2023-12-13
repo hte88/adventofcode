@@ -9,8 +9,24 @@ type TMapItem = {
 
 const { fileContent, handleFileChange } = useFileReader();
 
+const example = ref(`467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..`);
+
+const selectedInput = ref(true);
 const total = ref<number>(0);
-const lines = computed(() => fileContent.value?.split('\n').slice(0, -1) ?? []);
+
+const lines = computed(() => {
+  const file = selectedInput.value ? example.value : fileContent.value;
+  return file?.split('\n').slice(0, -1) ?? [];
+});
 const lineLength = computed(() => lines.value[0].length);
 
 function getSubMatrix(map: IMap, startRow: number, endRow: number, startCol: number, endCol: number): IMap {
@@ -47,7 +63,7 @@ function parseSubMatrix(subMatrix: IMap, symboles: string[]): string {
 }
 
 function stepOne() {
-  const symboles = extractSymboles(fileContent.value, ['.']);
+  const symboles = extractSymboles(selectedInput.value ? example.value : fileContent.value, ['.']);
   const mapFile = createMapFile(lines.value);
 
   const numbers = lines.value
@@ -153,17 +169,23 @@ function stepTwo() {
 }
 </script>
 <template>
-  <Card title="Day 3: Gear Ratios" :result="total">
+  <Card
+    v-model:example="example"
+    title="Day 3: Gear Ratios"
+    :rating="2"
+    :result="total"
+    @selected-input="selectedInput = $event"
+  >
     <template #inputFile>
       <input
         type="file"
-        class="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs mx-auto"
+        class="file-input file-input-bordered file-input-primary mx-auto w-full max-w-xs"
         @change="handleFileChange"
       />
     </template>
     <template #actions>
-      <button type="button" class="btn join-item btn-primary" @click.prevent="stepOne()">Step 1</button>
-      <button type="button" class="btn join-item btn-primary" @click.prevent="stepTwo()">Step 2</button>
+      <button type="button" class="btn btn-primary join-item" @click.prevent="stepOne()">Step 1</button>
+      <button type="button" class="btn btn-primary join-item" @click.prevent="stepTwo()">Step 2</button>
     </template>
   </Card>
 </template>
