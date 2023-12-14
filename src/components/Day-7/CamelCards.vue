@@ -1,4 +1,6 @@
 <script setup lang="ts">
+type THand = { hand: string; bid: number };
+
 const { fileContent, handleFileChange } = useFileReader();
 
 const example = ref(`32T3K 765
@@ -15,8 +17,8 @@ const lines = computed(() => {
   return selectedInput.value ? file?.split('\n') ?? [] : file?.split('\n').slice(0, -1) ?? [];
 });
 
-function ranking(hand) {
-  const groupByChar = {};
+function ranking(hand: string) {
+  const groupByChar = {} as { [key: string]: number };
 
   for (const card of hand) {
     if (!groupByChar[card]) {
@@ -46,7 +48,7 @@ function ranking(hand) {
   }
 }
 
-function order(a, b) {
+function order(a: string, b: string) {
   const order = 'AKQJT98765432';
 
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
@@ -60,7 +62,7 @@ function order(a, b) {
 }
 
 function stepOne() {
-  const hands = lines.value.map((line) => {
+  const hands: THand[] = lines.value.map((line) => {
     const str = line.split(' ');
     return { hand: str[0], bid: parseInt(str[1]) };
   });
@@ -79,9 +81,9 @@ function stepOne() {
   total.value = hands.reduce((a, b, i) => a + b.bid * (i + 1), 0);
 }
 
-function stepTwo() {
+/* function stepTwo() {
   // total.value = scratchcards.reduce((a, b) => a + b, 0);
-}
+} */
 </script>
 <template>
   <Card

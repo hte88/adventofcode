@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isNumber, extractSymboles, createMapFile } from '~/composables/useLib';
+import { isNumber, extractSymboles, createMapFile } from '../../composables/useLib';
 
 interface IMap extends Map<string, string> {}
 type TMapItem = {
@@ -63,7 +63,7 @@ function parseSubMatrix(subMatrix: IMap, symboles: string[]): string {
 }
 
 function stepOne() {
-  const symboles = extractSymboles(selectedInput.value ? example.value : fileContent.value, ['.']);
+  const symboles = extractSymboles(selectedInput.value ? example.value : fileContent.value ?? '', ['.']);
   const mapFile = createMapFile(lines.value);
 
   const numbers = lines.value

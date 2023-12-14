@@ -44,6 +44,8 @@ const lines = computed(() => {
 });
 
 function stepOne() {
+  console.log(lines);
+
   // total.value = result.reduce((a: number, b: number) => a + b, 0);
 }
 
